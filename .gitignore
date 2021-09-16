@@ -1,2 +1,4 @@
 Builds
 JuceLibraryCode
+cmake-build-debug-visual-studio
+testProject
