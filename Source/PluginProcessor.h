@@ -87,6 +87,35 @@ private:
         HighCut
     };
 
+    using Coefficients = Filter::CoefficientsPtr;
+    static void updateCoefficients(Coefficients &old, const Coefficients &replacements);
+    void updatePeakFilter(const ChainSettings &chainSettings);
+
+    template<typename ChainType, typename CoefficientType>
+    void updateCutFilter(ChainType &cut,
+                         const CoefficientType &cutCoefficients,
+                         const Slope &slope) {
+        cut.template setBypassed<0>(true);
+        cut.template setBypassed<1>(true);
+        cut.template setBypassed<2>(true);
+        cut.template setBypassed<3>(true);
+        switch (slope) {
+            case Slope48:
+                *cut.template get<3>().coefficients = *cutCoefficients[3];
+                cut.template setBypassed<3>(false);
+            case Slope36:
+                *cut.template get<2>().coefficients = *cutCoefficients[2];
+                cut.template setBypassed<2>(false);
+            case Slope24:
+                *cut.template get<1>().coefficients = *cutCoefficients[1];
+                cut.template setBypassed<1>(false);
+            case Slope12:
+                *cut.template get<0>().coefficients = *cutCoefficients[0];
+                cut.template setBypassed<0>(false);
+                break;
+        }
+    }
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessor)
 };
