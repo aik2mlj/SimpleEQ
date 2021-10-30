@@ -91,6 +91,11 @@ private:
     static void updateCoefficients(Coefficients &old, const Coefficients &replacements);
     void updatePeakFilter(const ChainSettings &chainSettings);
 
+    template<int Index, typename ChainType, typename CoefficientType>
+    void update(ChainType &chain, const CoefficientType &coefficients) {
+        updateCoefficients(chain.template get<Index>().coefficients, coefficients[Index]);
+        chain.template setBypassed<Index>(false);
+    }
     template<typename ChainType, typename CoefficientType>
     void updateCutFilter(ChainType &cut,
                          const CoefficientType &cutCoefficients,
@@ -101,17 +106,13 @@ private:
         cut.template setBypassed<3>(true);
         switch (slope) {
             case Slope48:
-                *cut.template get<3>().coefficients = *cutCoefficients[3];
-                cut.template setBypassed<3>(false);
+                update<3>(cut, cutCoefficients);
             case Slope36:
-                *cut.template get<2>().coefficients = *cutCoefficients[2];
-                cut.template setBypassed<2>(false);
+                update<2>(cut, cutCoefficients);
             case Slope24:
-                *cut.template get<1>().coefficients = *cutCoefficients[1];
-                cut.template setBypassed<1>(false);
+                update<1>(cut, cutCoefficients);
             case Slope12:
-                *cut.template get<0>().coefficients = *cutCoefficients[0];
-                cut.template setBypassed<0>(false);
+                update<0>(cut, cutCoefficients);
                 break;
         }
     }
