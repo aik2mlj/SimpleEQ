@@ -13,12 +13,12 @@
 
 struct MyLookAndFeel : juce::LookAndFeel_V4 {
     // implement DrawRotarySlider
-    void drawRotarySlider (juce::Graphics&,
-                           int x, int y, int width, int height,
+    void drawRotarySlider (juce::Graphics &g,
+                           int x, int y,
+                           int width, int height,
                            float sliderPosProportional,
-                           float rotaryStartAngle,
-                           float rotaryEndAngle,
-                           juce::Slider&) override {}
+                           float rotaryStartAngle, float rotaryEndAngle,
+                           juce::Slider &slider) override;
 };
 
 struct RotarySliderWithLabels : juce::Slider {
@@ -29,9 +29,9 @@ struct RotarySliderWithLabels : juce::Slider {
         setLookAndFeel(&lnf);
     }
 
-    ~RotarySliderWithLabels() { setLookAndFeel(nullptr); }
+    ~RotarySliderWithLabels() override { setLookAndFeel(nullptr); }
 
-    void paint(juce::Graphics &g) override {}
+    void paint(juce::Graphics &g) override;
     juce::Rectangle<int> getSliderBounds() const;
     static int getTextHeight() { return 14; }
     juce::String getDishplayString() const;
@@ -45,8 +45,8 @@ private:
 struct ResponseCurveComponent : juce::Component,
         juce::AudioProcessorParameter::Listener,
         juce::Timer {
-    ResponseCurveComponent(SimpleEQAudioProcessor&);
-    ~ResponseCurveComponent();
+    explicit ResponseCurveComponent(SimpleEQAudioProcessor&);
+    ~ResponseCurveComponent() override;
 
     void parameterValueChanged (int parameterIndex, float newValue) override;
     void parameterGestureChanged (int parameterIndex, bool gestureIsStarting) override {}
@@ -67,7 +67,7 @@ private:
 */
 class SimpleEQAudioProcessorEditor : public juce::AudioProcessorEditor {
 public:
-    SimpleEQAudioProcessorEditor(SimpleEQAudioProcessor &);
+    explicit SimpleEQAudioProcessorEditor(SimpleEQAudioProcessor &);
     ~SimpleEQAudioProcessorEditor() override;
 
     //==============================================================================
