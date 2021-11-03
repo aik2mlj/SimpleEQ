@@ -161,6 +161,9 @@ ResponseCurveComponent::ResponseCurveComponent(SimpleEQAudioProcessor &p) : audi
         param->addListener(this);
     }
 
+    // ensure to display the proper params
+    updateChain();
+
     // start timer
     startTimerHz(60);
 }
@@ -179,21 +182,24 @@ void ResponseCurveComponent::parameterValueChanged(int parameterIndex, float new
 
 void ResponseCurveComponent::timerCallback() {
     if (parametersChanged.compareAndSetBool(false, true)) {
-        // update the mono-chain
-        auto chainSettings = getChainSettings(audioProcessor.apvts);
-        // peak filter
-        auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
-        updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
-        // cut filters
-        auto lowCutCoefficients = makeLowCutFilter(chainSettings, audioProcessor.getSampleRate());
-        auto highCutCoefficients = makeHighCutFilter(chainSettings, audioProcessor.getSampleRate());
-        updateCutFilter(monoChain.get<ChainPositions::LowCut>(), lowCutCoefficients, chainSettings.lowCutSlope);
-        updateCutFilter(monoChain.get<ChainPositions::HighCut>(), highCutCoefficients, chainSettings.highCutSlope);
+        updateChain();
         // signal a repaint
         repaint();
     }
 }
 
+void ResponseCurveComponent::updateChain() {
+    // update the mono-chain
+    auto chainSettings = getChainSettings(audioProcessor.apvts);
+    // peak filter
+    auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
+    updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+    // cut filters
+    auto lowCutCoefficients = makeLowCutFilter(chainSettings, audioProcessor.getSampleRate());
+    auto highCutCoefficients = makeHighCutFilter(chainSettings, audioProcessor.getSampleRate());
+    updateCutFilter(monoChain.get<ChainPositions::LowCut>(), lowCutCoefficients, chainSettings.lowCutSlope);
+    updateCutFilter(monoChain.get<ChainPositions::HighCut>(), highCutCoefficients, chainSettings.highCutSlope);
+}
 void ResponseCurveComponent::paint(Graphics &g) {
     using namespace juce;
     // (Our component is opaque, so we must completely fill the background with a solid colour)
