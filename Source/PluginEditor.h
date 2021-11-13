@@ -59,8 +59,8 @@ struct ResponseCurveComponent : juce::Component,
     void parameterGestureChanged (int parameterIndex, bool gestureIsStarting) override {}
     void timerCallback() override;
 
-    void paint(juce::Graphics &g) override;
-    void resized() override;
+    void paint(juce::Graphics &g) override; // change every time
+    void resized() override; // preset before any actions
 private:
     SimpleEQAudioProcessor &audioProcessor;
 
