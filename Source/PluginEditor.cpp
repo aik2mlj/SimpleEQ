@@ -124,7 +124,6 @@ juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const {
 }
 
 juce::String RotarySliderWithLabels::getDisplayString() const {
-//    return juce::String(getValue());
     if (auto *choiceParam = dynamic_cast<juce::AudioParameterChoice *>(param))
         return choiceParam->getCurrentChoiceName();
 
@@ -206,7 +205,6 @@ void ResponseCurveComponent::paint(Graphics &g) {
     g.fillAll(Colours::black);
     g.drawImage(background, getLocalBounds().toFloat());
 
-//    auto responseArea = getLocalBounds();
     auto responseArea = getAnalysisArea();
 
     auto w = responseArea.getWidth();
@@ -351,6 +349,8 @@ void ResponseCurveComponent::resized() {
         str << gDb;
 
         auto textWidth = g.getCurrentFont().getStringWidth(str);
+
+        // right side labels
         Rectangle<int> r;
         r.setSize(textWidth, fontHeight);
         r.setX(getWidth() - textWidth);
@@ -358,13 +358,21 @@ void ResponseCurveComponent::resized() {
 
         g.setColour(gDb == 0.f ? Colour(0u, 172u, 1u) : Colours::lightgrey);
         g.drawFittedText(str, r, juce::Justification::centred, 1);
+
+        // left side labels
+        str.clear();
+        str << (gDb - 24.f);
+        r.setX(getX());
+        textWidth = g.getCurrentFont().getStringWidth(str);
+        r.setSize(textWidth, fontHeight);
+        g.setColour(Colours::lightgrey);
+        g.drawFittedText(str, r, juce::Justification::centred, 1);
     }
 }
 
 juce::Rectangle<int> ResponseCurveComponent::getRenderArea() {
     auto bounds = getLocalBounds();
 
-//    bounds.reduce(10, 8);
     bounds.removeFromTop(12);
     bounds.removeFromBottom(2);
     bounds.removeFromLeft(20);
