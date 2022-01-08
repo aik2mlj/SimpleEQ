@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.4)
 project("SimpleEQ")
 
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../FRUT/prefix/FRUT/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../FRUT/prefix/FRUT/cmake")
 include(Reprojucer)
 
 
@@ -14,7 +14,7 @@ set(SimpleEQ_jucer_FILE
 )
 
 
-set(JUCE_MODULES_GLOBAL_PATH "C:/Users/ASUS/JUCE/modules")
+set(JUCE_MODULES_GLOBAL_PATH "/home/aik2/JUCE/modules/")
 
 
 jucer_project_begin(
@@ -26,6 +26,8 @@ jucer_project_begin(
 jucer_project_settings(
   PROJECT_NAME "SimpleEQ"
   PROJECT_VERSION "1.0.0"
+  USE_GLOBAL_APPCONFIG_HEADER OFF
+  ADD_USING_NAMESPACE_JUCE_TO_JUCE_HEADER OFF
   REPORT_JUCE_APP_USAGE ON # Required for closed source applications without an Indie or Pro JUCE license
   DISPLAY_THE_JUCE_SPLASH_SCREEN ON # Required for closed source applications without an Indie or Pro JUCE license
   PROJECT_TYPE "Audio Plug-in"
@@ -204,6 +206,22 @@ jucer_export_target_configuration(
 
 jucer_export_target_configuration(
   "Visual Studio 2019"
+  NAME "Release"
+  DEBUG_MODE OFF
+)
+
+jucer_export_target(
+  "Linux Makefile"
+)
+
+jucer_export_target_configuration(
+  "Linux Makefile"
+  NAME "Debug"
+  DEBUG_MODE ON
+)
+
+jucer_export_target_configuration(
+  "Linux Makefile"
   NAME "Release"
   DEBUG_MODE OFF
 )

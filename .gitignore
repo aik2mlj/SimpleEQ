@@ -1,4 +1,6 @@
 Builds
+build
 JuceLibraryCode
 cmake-build-debug-visual-studio
 testProject
+.cache
